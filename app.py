@@ -1,14 +1,19 @@
-- name: Facts test
+- name: Handler test
   hosts: webserver
   become: yes
   tasks:
-       - name: Install nginx on Debian
+       - name: Install nginx
          apt:
             name: nginx
             state: present
-         when: ansible_os_family == "Debian"
-       - name: Install nginx on redhat
-         yum:
-            name: nginx
-            state: present
-         when: ansible_os_family == "RedHat"
+       - name: Change config file
+         copy:
+            src: 1.yaml
+            dest: /opt
+         notify:
+                - restart nginx
+  handlers:
+       - name: restart nginx
+         service:
+             name: nginx
+             state: restarted
