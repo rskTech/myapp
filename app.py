@@ -1,19 +1,15 @@
-- name: Handler test
+- name: template test
   hosts: webserver
   become: yes
+  vars_prompt:
+      name: port
+      prompt: Enter port number for server
   tasks:
-       - name: Install nginx
-         apt:
+     - name: template task
+       template:
+               src: default
+               dest: /etc/nginx/sites-enabled
+     - name: restart nginx
+       service:
             name: nginx
-            state: present
-       - name: Change config file
-         copy:
-            src: 1.yaml
-            dest: /opt
-         notify:
-                - restart nginx
-  handlers:
-       - name: restart nginx
-         service:
-             name: nginx
-             state: restarted
+            state: restarted
